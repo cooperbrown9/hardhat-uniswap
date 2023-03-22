@@ -8,6 +8,7 @@ import { ethers } from "hardhat";
 import { CollectOptions, DecreaseLiquidityOptions, ExactInputOptions, ExactInputSingleOptions, ExactOutputOptions, ExactOutputSingleOptions, IncreaseLiquidityOptions, MintOptions } from "../types.d.ts";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { Signer } from "ethers";
+import { HardhatRuntimeEnvironment } from "hardhat/types";
 
 describe("Unit Tests V3", function () {
     let AMOUNT_TOKEN: number;
@@ -241,7 +242,7 @@ describe("Unit Tests V3", function () {
 
 })
 
-async function mintPosition(hre) {
+async function mintPosition(hre: HardhatRuntimeEnvironment) {
     const [signer] = await ethers.getSigners();
     const v3Deployer = new UniswapV3Deployer(hre);
     await v3Deployer.deploy(signer);
@@ -261,7 +262,7 @@ async function mintPosition(hre) {
     return { test1, test2, v3Deployer, tokenId }
 }
 
-async function mintMultiplePositions(hre) {
+async function mintMultiplePositions(hre: HardhatRuntimeEnvironment) {
     const [signer] = await ethers.getSigners();
     const v3Deployer = new UniswapV3Deployer(hre);
     await v3Deployer.deploy(signer);

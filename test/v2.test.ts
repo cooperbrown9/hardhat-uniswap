@@ -17,6 +17,7 @@ import { useEnvironment } from "./helpers";
 import { SwapExactTokensForTokensOptions, DeployOptions, SwapTokensForExactTokensOptions, AddLiquidityOptions, RemoveLiquidityOptions, QuoteOptions, GetLiquidityValueInTermsOfTokenAOptions, AddLiquidityETHOptions } from "../types.d.ts";
 //@ts-ignore
 import { ethers } from "hardhat";
+import { HardhatRuntimeEnvironment } from "hardhat/types";
 
 function eth(n: number): BigNumber {
   return utils.parseEther(n.toString());
@@ -299,7 +300,7 @@ describe("Unit Tests", function () {
   })
 });
 
-async function addLiquidity(hre) {
+async function addLiquidity(hre: HardhatRuntimeEnvironment) {
   const [signer] = await ethers.getSigners();
 
   const v2Deployer = new UniswapV2Deployer(hre);
