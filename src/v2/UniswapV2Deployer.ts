@@ -140,7 +140,7 @@ export class UniswapV2Deployer {
     if(typeof options.amountLiquidity == "number") {
       liquidityEther = parseEther(options.amountLiquidity.toString())
     } 
-    await router.removeLiquidity(options.tokenA, options.tokenB, liquidityEther, 1, 1, (await options.signer.getAddress()), 9678825033)
+    await router.connect(options.signer).removeLiquidity(options.tokenA, options.tokenB, liquidityEther, 1, 1, (await options.signer.getAddress()), 9678825033)
   }
 
   public async removeLiquidityETH(options: RemoveLiquidityETHOptions) {
@@ -193,8 +193,6 @@ export class UniswapV2Deployer {
     }
     const tvl = reserveA * 2
     const singleLp = tvl * Number(parseEther("1")) / (await pair.totalSupply())
-    console.log("tvl", tvl)
-    console.log("singleLp:", singleLp)
     
     return BigNumber.from((singleLp * options.amountLiquidity).toString());
   }
