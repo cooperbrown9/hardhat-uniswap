@@ -11,8 +11,9 @@
     "ethereum",
     "hardhat",
     "hardhat-plugin",
-    "UniswapV2",
-    "UniswapV3",
+    "uniswap",
+    "uniswapV2",
+    "uniswapV3",
     "smart-contracts"
   ],
   "scripts": {
