@@ -5,7 +5,7 @@ import deployFactory from "./deployers/deployFactory";
 import deployRouter from "./deployers/deployRouter";
 import deployWETH9 from "./deployers/deployWETH9";
 import Interface from "./interfaces/Interface";
-import { SwapExactTokensForTokensOptions, AddLiquidityOptions, RemoveLiquidityOptions, QuoteOptions, SwapTokensForExactTokensOptions, GetLiquidityValueInTermsOfTokenAOptions, RemoveLiquidityETHOptions, AddLiquidityETHOptions } from "../../types.d.ts";
+import { SwapExactTokensForTokensOptions, AddLiquidityOptions, RemoveLiquidityOptions, QuoteOptions, SwapTokensForExactTokensOptions, GetLiquidityValueInTermsOfTokenAOptions, RemoveLiquidityETHOptions, AddLiquidityETHOptions } from "../../types";
 
 import { CommonDeployers } from "../common";
 

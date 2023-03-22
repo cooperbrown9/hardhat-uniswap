@@ -8,7 +8,7 @@ import { BigNumber, utils } from "ethers";
 
 import { useEnvironment } from "./helpers";
 
-import { SwapExactTokensForTokensOptions, SwapTokensForExactTokensOptions, AddLiquidityOptions, RemoveLiquidityOptions, QuoteOptions, GetLiquidityValueInTermsOfTokenAOptions, AddLiquidityETHOptions } from "../types.d.ts";
+import { SwapExactTokensForTokensOptions, SwapTokensForExactTokensOptions, AddLiquidityOptions, RemoveLiquidityOptions, QuoteOptions, GetLiquidityValueInTermsOfTokenAOptions, AddLiquidityETHOptions } from "../types";
 import { ethers } from "hardhat";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 

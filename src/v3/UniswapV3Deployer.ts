@@ -6,7 +6,7 @@ import deployWETH9 from "./deployers/deployWETH9";
 import Interface from "./Interface";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { CommonDeployers } from "../common";
-import { ExactInputOptions, ExactInputSingleOptions, ExactOutputSingleOptions, MintOptions, ExactOutputOptions, CollectOptions, IncreaseLiquidityOptions, DecreaseLiquidityOptions } from "../../types.d.ts";
+import { ExactInputOptions, ExactInputSingleOptions, ExactOutputSingleOptions, MintOptions, ExactOutputOptions, CollectOptions, IncreaseLiquidityOptions, DecreaseLiquidityOptions } from "../../types";
 import deployTokenDescriptor from "./deployers/deployTokenDescriptor";
 import deployPositionManager from "./deployers/deployPositionManager";
 import deployNFTDescriptorLibrary from "./deployers/deployNFTDescriptorLibrary";

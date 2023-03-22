@@ -21,6 +21,6 @@
   "include": [
     "./src",
     "./typechain",
-    "types.d.ts.ts"
+    "types/types.d.ts.ts"
   ],
 }

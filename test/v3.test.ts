@@ -5,7 +5,7 @@ import { useEnvironment } from "./helpers";
 import { UniswapV3Deployer } from "../src/v3/UniswapV3Deployer";
 //@ts-ignore
 import { ethers } from "hardhat";
-import { CollectOptions, DecreaseLiquidityOptions, ExactInputOptions, ExactInputSingleOptions, ExactOutputOptions, ExactOutputSingleOptions, IncreaseLiquidityOptions, MintOptions } from "../types.d.ts";
+import { CollectOptions, DecreaseLiquidityOptions, ExactInputOptions, ExactInputSingleOptions, ExactOutputOptions, ExactOutputSingleOptions, IncreaseLiquidityOptions, MintOptions } from "../types";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { Signer } from "ethers";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
