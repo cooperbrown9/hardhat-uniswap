@@ -106,7 +106,6 @@ export class UniswapV2Deployer {
   }
 
   public getERC20(address: string): Contract | undefined {
-    this.createERC20()
     return this._tokens.get(address);
   }
 
