@@ -1,8 +1,8 @@
 {
   "name": "hardhat-uniswap",
-  "version": "1.0.2",
+  "version": "1.0.21",
   "description": "Complete Uniswap V2 and V3 Uniswap library to enable more efficient use with developing with Uniswap functionality",
-  "repository": "github:b10k-io/hardhat-uniswap-v2-deploy-plugin",
+  "repository": "https://github.com/cooperbrown9/hardhat-uniswap.git",
   "author": "cooperbrown9",
   "license": "MIT",
   "main": "dist/src/index.js",

@@ -1,8 +1,7 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { Contract, ContractFactory } from "ethers";
 import { parseEther } from "ethers/lib/utils";
-import { abi, bytecode } from '../../../deploy/contracts/TestToken.json';
-//@ts-ignore
+import { abi, bytecode } from '../../util/TestToken.json';
 
 async function deployERC20(
   signer: SignerWithAddress,

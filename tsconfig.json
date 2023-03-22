@@ -15,14 +15,12 @@
   },
   "exclude": [
     "dist",
+    "node_modules",
     "hardhat.config"
   ],
   "include": [
     "./src",
     "./typechain",
-    "./deploy",
-    "./contracts",
-    "./test",
     "types.d.ts.ts"
   ],
 }
