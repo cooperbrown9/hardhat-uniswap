@@ -277,15 +277,9 @@ export class UniswapV3Deployer {
     }
     const res = await positionManager.collect(collectParams)
     const tx = await res.wait()
-    // console.log(tx.events)
-
-
     const args = tx.events[tx.events.length - 1].args;
     const amount0 = args[2]
     const amount1 = args[3]
-    console.log("amount0", amount0.toString())
-    console.log("amount1", amount1.toString())
-    console.log("tokenid", args[0])
     return Number(tx.logs[tx.logs.length - 1].topics[1])
   }
 
@@ -320,9 +314,6 @@ export class UniswapV3Deployer {
     const args = tx.events[tx.events.length - 1].args;
     const amount0 = args[2]
     const amount1 = args[3]
-    console.log(args)
-    console.log("amount0", amount0.toString())
-    console.log("amount2", amount1.toString())
     return [amount0, amount1]
 
   }
