@@ -52,11 +52,7 @@ export class UniswapV2Deployer {
     };
   }
 
-  /**
-   * Returns the WETH contract
-   * @param signer 
-   * @returns 
-   */
+
   public async getWeth(signer: SignerWithAddress): Promise<Contract> {
     if (!this._weth) {
       const { weth9 } = await deployWETH9(signer)
@@ -111,6 +107,10 @@ export class UniswapV2Deployer {
 
   /**
    * @param {AddLiquidityOptions} options
+   * @member {String} tokenA
+   * @member {String} tokenB
+   * @member {number | BigNumber} amountTokenA
+   * @member {number | BigNumber} amountTokenB?
    */
   public async addLiquidity(options: AddLiquidityOptions) {
     const router = await this.getRouter(options.signer)

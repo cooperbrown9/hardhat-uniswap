@@ -1,11 +1,5 @@
-// V2 TYPES
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { BigNumber, Bytes, Signer } from "ethers";
-
-export type DeployOptions = {
-    tWETH: boolean;
-    signer: SignerWithAddress;
-}
 
 export interface AddLiquidityOptions {
     signer: SignerWithAddress;
