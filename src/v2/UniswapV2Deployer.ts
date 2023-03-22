@@ -1,21 +1,14 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import { BigNumber, constants, Contract, ContractFactory, utils } from "ethers";
-//@ts-ignore
-// import { ethers } from "hardhat";
+import { BigNumber, constants, Contract } from "ethers";
 
 import deployFactory from "./deployers/deployFactory";
 import deployRouter from "./deployers/deployRouter";
 import deployWETH9 from "./deployers/deployWETH9";
 import Interface from "./interfaces/Interface";
-import { SwapExactTokensForTokensOptions, DeployOptions, AddLiquidityOptions, RemoveLiquidityOptions, QuoteOptions, SwapTokensForExactTokensOptions, GetLiquidityValueInTermsOfTokenAOptions, RemoveLiquidityETHOptions, AddLiquidityETHOptions } from "../../types.d.ts";
+import { SwapExactTokensForTokensOptions, AddLiquidityOptions, RemoveLiquidityOptions, QuoteOptions, SwapTokensForExactTokensOptions, GetLiquidityValueInTermsOfTokenAOptions, RemoveLiquidityETHOptions, AddLiquidityETHOptions } from "../../types.d.ts";
 
 import { CommonDeployers } from "../common";
 
-import {
-  abi,
-  bytecode,
-} from "@uniswap/v2-core/build/UniswapV2Pair.json";
-import { remove } from "fs-extra";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { parseEther } from "ethers/lib/utils";
 
@@ -26,14 +19,18 @@ export class UniswapV2Deployer {
   private _weth?: Contract;
   private _tokens: Map<string, Contract>;
 
-  public deployer?: SignerWithAddress;
+  public signer?: SignerWithAddress;
 
   public hre?: HardhatRuntimeEnvironment;
 
-  constructor(hre: HardhatRuntimeEnvironment, _deployer?: SignerWithAddress) {
+  constructor(hre: HardhatRuntimeEnvironment, _signer?: SignerWithAddress) {
     this.hre = hre;
-    this.deployer = _deployer;
+    this.signer = _signer;
     this._tokens = new Map()
+  }
+
+  public setSigner(_signer: SignerWithAddress) {
+    this.signer = _signer;
   }
 
   public async deploy(signer: SignerWithAddress) {
@@ -94,12 +91,6 @@ export class UniswapV2Deployer {
       pairAddress
 
     );
-    // const pair = await ethers.getContractAt(
-    //   require("@uniswap/v2-core/build/UniswapV2Pair.json")
-    //     .abi,
-    //   pairAddress
-
-    // );
     return pair;
   }
 
@@ -128,7 +119,6 @@ export class UniswapV2Deployer {
 
   public async addLiquidityETH(options: AddLiquidityETHOptions) {
     const router = await this.getRouter(options.signer)
-    // if(options.amountEth)
     let amountTokenEther= await parseEther(options.amountToken.toString())
     let amountETHEther = await parseEther(options.amountETH.toString())
     await router.connect(options.signer).addLiquidityETH(options.token, amountTokenEther, 1, 1, (await options.signer.getAddress()), 9678825033, {value: amountETHEther});
@@ -196,9 +186,4 @@ export class UniswapV2Deployer {
     
     return BigNumber.from((singleLp * options.amountLiquidity).toString());
   }
-
-  // Return Types,
-  // Atomic Tests
-  // Object param
-  // 
 }
