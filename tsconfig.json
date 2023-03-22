@@ -20,6 +20,9 @@
   "include": [
     "./src",
     "./typechain",
+    "./deploy",
+    "./contracts",
+    "./test",
     "types.d.ts.ts"
   ],
 }

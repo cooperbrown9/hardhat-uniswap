@@ -1,3 +1,4 @@
+// @no-check
 // tslint:disable-next-line no-implicit-dependencies
 import { assert, expect } from "chai";
 import { useEnvironment } from "./helpers";
