@@ -1,6 +1,6 @@
 {
   "name": "hardhat-uniswap",
-  "version": "1.0.24",
+  "version": "1.0.4",
   "description": "Complete Uniswap V2 and V3 Uniswap library to enable more efficient use with developing with Uniswap functionality",
   "repository": "https://github.com/cooperbrown9/hardhat-uniswap.git",
   "contributors": [
@@ -71,7 +71,8 @@
     "@uniswap/v2-core": "^1.0.1",
     "@uniswap/v2-periphery": "^1.1.0-beta.0",
     "@uniswap/v3-core": "^1.0.1",
-    "@uniswap/v3-periphery": "1.0.1"
+    "@uniswap/v3-periphery": "1.0.1",
+    "bignumber.js": "^9.1.1"
   },
   "dependencies": {
     
