@@ -3,7 +3,18 @@
   "version": "1.0.22",
   "description": "Complete Uniswap V2 and V3 Uniswap library to enable more efficient use with developing with Uniswap functionality",
   "repository": "https://github.com/cooperbrown9/hardhat-uniswap.git",
-  "author": "cooperbrown9",
+  "contributors": [
+    {
+      "name": "Malcolm Teel",
+      "email": "malcolmateel@gmail.com",
+      "url": "https://etherscan.io/address/0x6c86D9743501c1d1A069895b9C305173eCA5D899"
+    },
+    {
+      "name": "Cooper Brown",
+      "email": "cooperbrown9e@gmail.com",
+      "url": "https://etherscan.io/address/0x6c86D9743501c1d1A069895b9C305173eCA5D899"
+    }
+  ],
   "license": "MIT",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
