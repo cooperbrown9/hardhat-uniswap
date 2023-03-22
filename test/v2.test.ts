@@ -7,9 +7,8 @@ import { assert, expect } from "chai";
 import { BigNumber, utils } from "ethers";
 
 import { useEnvironment } from "./helpers";
-
+import { ethers } from 'hardhat';
 import { SwapExactTokensForTokensOptions, SwapTokensForExactTokensOptions, AddLiquidityOptions, RemoveLiquidityOptions, QuoteOptions, GetLiquidityValueInTermsOfTokenAOptions, AddLiquidityETHOptions } from "../types";
-import { ethers } from "hardhat";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 
 function eth(n: number): BigNumber {

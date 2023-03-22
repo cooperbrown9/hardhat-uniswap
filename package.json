@@ -1,6 +1,6 @@
 {
   "name": "hardhat-uniswap",
-  "version": "1.0.42",
+  "version": "1.0.43",
   "description": "Complete Uniswap V2 and V3 Uniswap library to enable more efficient use with developing with Uniswap functionality",
   "repository": "https://github.com/cooperbrown9/hardhat-uniswap.git",
   "contributors": [
@@ -43,8 +43,8 @@
     "README.md"
   ],
   "devDependencies": {
-    "@openzeppelin/contracts": "^4.8.2",
     "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers@^0.3.0-beta.11",
+    "@openzeppelin/contracts": "^4.8.2",
     "@types/chai": "^4.1.7",
     "@types/fs-extra": "^5.0.4",
     "@types/mocha": "^5.2.6",
@@ -58,7 +58,6 @@
     "ethers": "^5.7.2",
     "hardhat": "^2.0.0",
     "hardhat-deploy": "^0.11.25",
-    "hardhat-ethers": "^1.0.1",
     "mocha": "^7.1.2",
     "prettier": "2.0.5",
     "ts-node": "^8.1.0",
@@ -68,15 +67,12 @@
     "typescript": "^4.0.3"
   },
   "peerDependencies": {
-    "hardhat": "^2.0.0",
     "@uniswap/v2-core": "^1.0.1",
     "@uniswap/v2-periphery": "^1.1.0-beta.0",
     "@uniswap/v3-core": "^1.0.1",
     "@uniswap/v3-periphery": "1.0.1",
-    "bignumber.js": "^9.1.1"
-  },
-  "dependencies": {
-    
+    "bignumber.js": "^9.1.1",
+    "hardhat": "^2.0.0"
   },
   "publishConfig": {
     "access": "public"
