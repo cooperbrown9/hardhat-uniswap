@@ -1,0 +1,1 @@
+export { deployERC20 } from './deployERC20';

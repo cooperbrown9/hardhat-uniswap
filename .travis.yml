@@ -1,0 +1,19 @@
+language: node_js
+
+node_js:
+  - "8"
+  - "10"
+  - "11"
+
+install:
+  - yarn
+
+script:
+  - yarn test
+  - yarn lint
+
+cache: yarn
+
+branches:
+  only:
+    - master
