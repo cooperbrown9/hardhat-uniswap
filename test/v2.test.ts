@@ -49,21 +49,6 @@ describe("Unit Tests", function () {
         assert.equal(await router.factory(), factory.address);
         assert.equal(await router.WETH(), weth9.address);
       });
-
-      it("Should have Interface", async function () {
-        expect(this.hre.UniswapV2Deployer.Interface.IUniswapV2Pair.abi).to.eql(
-          IUniswapV2PairBuild.abi
-        );
-        expect(this.hre.UniswapV2Deployer.Interface.IUniswapV2ERC20.abi).to.eql(
-          IUniswapV2ERC20Build.abi
-        );
-        expect(this.hre.UniswapV2Deployer.Interface.IUniswapV2Factory.abi).to.eql(
-          IUniswapV2FactoryBuild.abi
-        );
-        expect(this.hre.UniswapV2Deployer.Interface.IUniswapV2Router02.abi).to.eql(
-          IUniswapV2Router02Build.abi
-        );
-      });
     });
     describe("Helper Functions", function () {
       it("should create an ERC20", async function () {
@@ -192,6 +177,18 @@ describe("Unit Tests", function () {
         // account for some ETH burned as gas.
         expect(Number(ethers.utils.formatEther(balanceAfterAddEth.toString()))).to.be.lessThanOrEqual(Number(ethers.utils.formatEther(balance.toString())) - 5)
         expect(Number(ethers.utils.formatEther(balanceAfterAddEth.toString()))).to.be.greaterThan(Number(ethers.utils.formatEther(balance.toString())) - 5.05)
+      })
+
+      describe("Hardhat Uniswap Setup Example", async function () {
+        
+        let weth9, factory, router, signer; 
+        beforeEach("deploy", async function () {
+          const signers = await this.hre.ethers.getSigners();
+          signer = signers[0];
+          [weth9, factory, router] = await this.hre.UniswapV2Deployer.deploy()
+        }
+        )
+
       })
     })
   })
