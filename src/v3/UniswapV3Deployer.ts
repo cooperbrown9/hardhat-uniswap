@@ -118,7 +118,7 @@ export class UniswapV3Deployer {
   }
 
   public async createERC20(signer: SignerWithAddress, name: string, symbol: string): Promise<Contract> {
-    const { erc20 } = await CommonDeployers.deployERC20(signer, name, symbol);
+    const { erc20 } = await CommonDeployers.deployERC20(signer, name, symbol, await this.getRouter(signer));
     this._tokens.set(erc20.address, erc20);
     return erc20;
   }
@@ -126,11 +126,20 @@ export class UniswapV3Deployer {
   public getERC20(address: string): Contract | undefined {
     return this._tokens.get(address);
   }
-
+  /**
+  * @param {ExactInputSingleOptions} options
+  * @member {SignerWithAddress} signer
+  * @member {string} tokenIn
+  * @member {string} tokenOut
+  * @member {number} fee
+  * @member {number | BigNumber} amountIn
+  */
   public async exactInputSingle(options: ExactInputSingleOptions) {
     const router = await this.getRouter(options.signer)
-    const amountInEther = parseEther(options.amountIn.toString());
-
+    let amountInEther = options.amountIn;
+    if (typeof options.amountIn == "number") {
+      amountInEther = parseEther(options.amountIn.toString());
+    }
     const exactInputSingleParams = {
       tokenIn: options.tokenIn,
       tokenOut: options.tokenOut,
@@ -143,10 +152,18 @@ export class UniswapV3Deployer {
     }
     await router.connect(options.signer).exactInputSingle(exactInputSingleParams)
   }
-
+  /**
+  * @param {ExactInputOptions} options
+  * @member {SignerWithAddress} signer
+  * @member {Array<string | number>} path
+  * @member {number | BigNumber} amountin
+  */
   public async exactInput(options: ExactInputOptions) {
     const router = await this.getRouter(options.signer)
-    const amountInEther = parseEther(options.amountIn.toString());
+    let amountInEther = options.amountIn;
+    if (typeof options.amountIn == "number") {
+      amountInEther = parseEther(options.amountIn.toString());
+    }
     let types = Array(options.path.length).fill("address")
     for (let i = 0; i < options.path.length; i++) {
       if (i % 2 != 0) {
@@ -165,10 +182,20 @@ export class UniswapV3Deployer {
     }
     await router.connect(options.signer).exactInput(exactInputParams);
   }
-
+  /**
+  * @param {ExactOutputSingleOptions} options
+  * @member {SignerWithAddress} signer
+  * @member {string} tokenIn
+  * @member {string} tokenOut
+  * @member {number} fee
+  * @member {number | BigNumber} amountOut
+  */
   public async exactOutputSingle(options: ExactOutputSingleOptions) {
     const router = await this.getRouter(options.signer)
-    const amountOutEther = parseEther(options.amountOut.toString());
+    let amountOutEther = options.amountOut;
+    if (typeof options.amountOut == "number") {
+      amountOutEther = parseEther(options.amountOut.toString());
+    }
     const exactOutputSingleParams = {
       tokenIn: options.tokenIn,
       tokenOut: options.tokenOut,
@@ -183,10 +210,18 @@ export class UniswapV3Deployer {
     await router.connect(options.signer).exactOutputSingle(exactOutputSingleParams);
 
   }
-
+  /**
+  * @param {ExactOutputOptions} options
+  * @member {SignerWithAddress} signer
+  * @member {Array<string | number>} path
+  * @member {number | BigNumber} amountOut
+  */
   public async exactOutput(options: ExactOutputOptions) {
     const router = await this.getRouter(options.signer)
-    const amountOutEther = parseEther(options.amountOut.toString());
+    let amountOutEther = options.amountOut;
+    if (typeof options.amountOut == "number") {
+      amountOutEther = parseEther(options.amountOut.toString());
+    }
     let types = Array(options.path.length).fill("address")
     for (let i = 0; i < options.path.length; i++) {
       if (i % 2 != 0) {
@@ -206,14 +241,29 @@ export class UniswapV3Deployer {
     }
     await router.connect(options.signer).exactOutput(exactOutputParams);
   }
-
+  /**
+  * @param {MintOptions} options
+  * @member {SignerWithAddress} signer
+  * @member {string} token0
+  * @member {string} token1
+  * @member {number} fee
+  * @member {number | BigNumber} amount0Desired
+  * @member {number | BigNumber} amount1Desired
+  * @member {number} price
+  */
   public async mintPosition(options: MintOptions): Promise<Number> {
     const positionManager = await this.getPositionManager(options.signer)
     const signerAddress = await options.signer.getAddress()
 
     //Parse amounts into ether
-    const amount0DesiredInEther = parseEther(options.amount0Desired.toString());
-    const amount1DesiredInEther = parseEther(options.amount1Desired.toString());
+    let amount0DesiredEther = options.amount0Desired;
+    let amount1DesiredEther = options.amount1Desired;
+    if (typeof options.amount0Desired == "number") {
+      amount0DesiredEther = parseEther(options.amount0Desired.toString())
+    }
+    if (typeof options.amount1Desired == "number") {
+      amount1DesiredEther = parseEther(options.amount1Desired.toString())
+    }
 
     // Approve Tokens
     //@ts-ignore
@@ -252,8 +302,8 @@ export class UniswapV3Deployer {
       fee: options.fee,
       tickLower: nearestTick - tickSpacing * 2,
       tickUpper: nearestTick + tickSpacing * 2,
-      amount0Desired: amount0DesiredInEther,
-      amount1Desired: amount1DesiredInEther,
+      amount0Desired: amount0DesiredEther,
+      amount1Desired: amount1DesiredEther,
       amount0Min: 0,
       amount1Min: 0,
       recipient: signerAddress,
@@ -266,7 +316,11 @@ export class UniswapV3Deployer {
     return Number(tx.logs[tx.logs.length - 1].topics[1]);
 
   }
-
+  /**
+  * @param {CollectOptions} options
+  * @member {SignerWithAddress} signer
+  * @member {number} tokenId 
+  */
   public async collectFees(options: CollectOptions): Promise<Number> {
     const positionManager = await this.getPositionManager(options.signer)
     const collectParams = {
@@ -282,15 +336,27 @@ export class UniswapV3Deployer {
     const amount1 = args[3]
     return Number(tx.logs[tx.logs.length - 1].topics[1])
   }
-
+  /**
+  * @param {IncreaseLiquidityOptions} options
+  * @member {SignerWithAddress} signer
+  * @member {number} tokenId 
+  * @member {number | BigNumber} amount0Desired
+  * @member {number | BigNumber} amount1Desired
+  */
   public async increaseLiquidity(options: IncreaseLiquidityOptions) {
     const positionManager = await this.getPositionManager(options.signer)
-    const amount0DesiredEth = parseEther(options.amount0Desired.toString())
-    const amount1DesiredEth = parseEther(options.amount1Desired.toString())
+    let amount0DesiredEther = options.amount0Desired;
+    let amount1DesiredEther = options.amount1Desired;
+    if (typeof options.amount0Desired == "number") {
+      amount0DesiredEther = parseEther(options.amount0Desired.toString())
+    }
+    if (typeof options.amount1Desired == "number") {
+      amount1DesiredEther = parseEther(options.amount1Desired.toString())
+    }
     const increaseLiquidityParams = {
       tokenId: options.tokenId,
-      amount0Desired: amount0DesiredEth,
-      amount1Desired: amount1DesiredEth,
+      amount0Desired: amount0DesiredEther,
+      amount1Desired: amount1DesiredEther,
       amount0Min: 0,
       amount1Min: 0,
       deadline: Math.floor(Date.now() / 1000) + 1000
@@ -299,12 +365,22 @@ export class UniswapV3Deployer {
     await positionManager.connect(options.signer).increaseLiquidity(increaseLiquidityParams)
 
   }
+
+  /**
+  * @param {DecreaseLiquidityOptions} options
+  * @member {SignerWithAddress} signer
+  * @member {number} tokenId 
+  * @member {number | BigNumber} liquidityAmount
+  */
   public async decreaseLiquidity(options: DecreaseLiquidityOptions): Promise<Array<number>> {
     const positionManager = await this.getPositionManager(options.signer)
-    const liquidityEth = parseEther(options.liquidity.toString())
+    let liquidityEther = options.amountLiquidity;
+    if (typeof options.amountLiquidity == "number") {
+      liquidityEther = parseEther(options.amountLiquidity.toString())
+    }
     const decreaseLiquidityParams = {
       tokenId: options.tokenId,
-      liquidity: liquidityEth,
+      liquidity: liquidityEther,
       amount0Min: 0,
       amount1Min: 0,
       deadline: Math.floor(Date.now() / 1000) + 1000

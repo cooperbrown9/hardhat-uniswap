@@ -15,45 +15,45 @@ export interface RemoveLiquidityOptions {
     tokenB: string;
     amountLiquidity: number | BigNumber;
 }
-
+export interface RemoveLiquidityETHOptions {
+    signer: SignerWithAddress;
+    token: string;
+    amountLiquidity: number | BigNumber;
+}
 export interface SwapExactTokensForTokensOptions {
     signer: SignerWithAddress;
-    amountIn: number;
+    amountIn: number | BigNumber;
     inputToken: string;
     outputToken: string;
 }
 
 export interface SwapTokensForExactTokensOptions {
     signer: SignerWithAddress;
-    amountOut: number;
+    amountOut: number | BigNumber;
     inputToken: string;
     outputToken: string;
 }
 
 export interface QuoteOptions {
     signer: SignerWithAddress;
-    tokenA: String;
-    tokenB: String;
-    amountA: Number;
+    tokenA: string;
+    tokenB: string;
+    amountA: number | BigNumber;
 }
 
 export interface GetLiquidityValueInTermsOfTokenAOptions {
     signer: SignerWithAddress;
-    tokenA: String;
-    tokenB: String;
-    amountLiquidity: number;
+    tokenA: string;
+    tokenB: string;
+    amountLiquidity: number | BigNumber;
 }
 export interface AddLiquidityETHOptions {
     signer: SignerWithAddress;
     token: string;
-    amountToken: number;
-    amountETH: number;
+    amountToken: number | BigNumber;
+    amountETH: number | BigNumber;
 }
-export interface RemoveLiquidityETHOptions {
-    signer: SignerWithAddress;
-    token: string;
-    amountLiquidity: number;
-}
+
 
 //V3 Types
 export interface ExactInputSingleOptions {
@@ -61,13 +61,13 @@ export interface ExactInputSingleOptions {
     tokenIn: string;
     tokenOut: string;
     fee: number;
-    amountIn: number;
+    amountIn: number | BigNumber;
 }
 
 export interface ExactInputOptions {
-    signer: SignerWithAddress,
-    path: Array<string | number>,
-    amountIn: number
+    signer: SignerWithAddress;
+    path: Array<string | number>;
+    amountIn: number | BigNumber;
 }
 
 export interface ExactOutputSingleOptions {
@@ -75,13 +75,13 @@ export interface ExactOutputSingleOptions {
     tokenIn: string;
     tokenOut: string;
     fee: number;
-    amountOut: number;
+    amountOut: number | BigNumber;
 }
 
 export interface ExactOutputOptions {
     signer: SignerWithAddress;
     path: Array<string | number>;
-    amountOut: number;
+    amountOut: number | BigNumber;
 }
 
 
@@ -90,25 +90,25 @@ export interface MintOptions {
     token0: string;
     token1: string;
     fee: number;
-    amount0Desired: number;
-    amount1Desired: number;
+    amount0Desired: number | BigNumber;
+    amount1Desired: number | BigNumber;
     price: number;
 }
 
 export interface CollectOptions {
     signer: SignerWithAddress;
-    tokenId: Number;
+    tokenId: number;
 }
 
 export interface IncreaseLiquidityOptions {
     signer: SignerWithAddress;
-    tokenId: Number;
-    amount0Desired: number;
-    amount1Desired: number;
+    tokenId: number;
+    amount0Desired: number | BigNumber;
+    amount1Desired: number | BigNumber;
 }
 
 export interface DecreaseLiquidityOptions {
     signer: SignerWithAddress;
-    tokenId: Number;
-    liquidity: number;
+    tokenId: number;
+    amountLiquidity: number | BigNumber;
 }

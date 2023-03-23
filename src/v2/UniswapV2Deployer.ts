@@ -10,7 +10,7 @@ import { SwapExactTokensForTokensOptions, AddLiquidityOptions, RemoveLiquidityOp
 import { CommonDeployers } from "../common";
 
 import { HardhatRuntimeEnvironment } from "hardhat/types";
-import { parseEther } from "ethers/lib/utils";
+import { formatEther, parseEther } from "ethers/lib/utils";
 
 export class UniswapV2Deployer {
   public Interface = Interface;
@@ -77,7 +77,7 @@ export class UniswapV2Deployer {
     return this._router;
   }
 
-  public async getPair(signer: SignerWithAddress, tokenA: String, tokenB: String) {
+  public async getPair(signer: SignerWithAddress, tokenA: string, tokenB: string) {
     const factory = await this.getFactory(signer);
     const pairAddress = await factory.getPair(tokenA, tokenB);
     //@ts-ignore
@@ -96,7 +96,7 @@ export class UniswapV2Deployer {
    * @param symbol 
    */
   public async createERC20(signer: SignerWithAddress, name: string, symbol: string): Promise<Contract> {
-    const { erc20 } = await CommonDeployers.deployERC20(signer, name, symbol);
+    const { erc20 } = await CommonDeployers.deployERC20(signer, name, symbol, await this.getRouter(signer));
     this._tokens.set(erc20.address, erc20);
     return erc20;
   }
@@ -107,64 +107,120 @@ export class UniswapV2Deployer {
 
   /**
    * @param {AddLiquidityOptions} options
-   * @member {String} tokenA
-   * @member {String} tokenB
+   * @member {SignerWithAddress} signer
+   * @member {string} tokenA
+   * @member {string} tokenB
    * @member {number | BigNumber} amountTokenA
    * @member {number | BigNumber} amountTokenB?
    */
   public async addLiquidity(options: AddLiquidityOptions) {
     const router = await this.getRouter(options.signer)
+    this.addLiquidity
     let amountAEther = options.amountTokenA;
     let amountBEther = options.amountTokenB;
-    if(typeof options.amountTokenA == "number") {
-      amountAEther = await parseEther(options.amountTokenA.toString())
+    if (typeof options.amountTokenA == "number") {
+      amountAEther = parseEther(options.amountTokenA.toString())
     }
-    if(typeof options.amountTokenB == "number") {
-      amountBEther = await parseEther(options.amountTokenB.toString())
+    if (typeof options.amountTokenB == "number") {
+      amountBEther = parseEther(options.amountTokenB.toString())
     }
     await router.connect(options.signer).addLiquidity(options.tokenA, options.tokenB, amountAEther, amountBEther, 1, 1, (await options.signer.getAddress()), 9678825033);
   }
 
+  /**
+   * @param {AddLiquidityETHOptions} options
+   * @member {SignerWithAddress} signer
+   * @member {string} token
+   * @member {number | BigNumber} amountToken
+   * @member {number | BigNumber} amountETH
+   */
   public async addLiquidityETH(options: AddLiquidityETHOptions) {
     const router = await this.getRouter(options.signer)
-    let amountTokenEther= await parseEther(options.amountToken.toString())
-    let amountETHEther = await parseEther(options.amountETH.toString())
-    await router.connect(options.signer).addLiquidityETH(options.token, amountTokenEther, 1, 1, (await options.signer.getAddress()), 9678825033, {value: amountETHEther});
+    let amountTokenEther = options.amountToken;
+    let amountETHEther = options.amountETH;
+    if (typeof options.amountToken == "number") {
+      amountTokenEther = parseEther(options.amountToken.toString())
+    }
+    if (typeof options.amountETH == "number") {
+      amountETHEther = parseEther(options.amountETH.toString())
+    }
+    await router.connect(options.signer).addLiquidityETH(options.token, amountTokenEther, 1, 1, (await options.signer.getAddress()), 9678825033, { value: amountETHEther });
   }
 
+  /**
+  * @param {RemoveLiquidityOptions} options
+  * @member {SignerWithAddress} signer
+  * @member {string} tokenA
+  * @member {string} tokenB
+  * @member {number | BigNumber} amountLiquidity
+  */
   public async removeLiquidity(options: RemoveLiquidityOptions) {
     const router = await this.getRouter(options.signer)
     let liquidityEther = options.amountLiquidity;
-    if(typeof options.amountLiquidity == "number") {
+    if (typeof options.amountLiquidity == "number") {
       liquidityEther = parseEther(options.amountLiquidity.toString())
-    } 
+    }
     await router.connect(options.signer).removeLiquidity(options.tokenA, options.tokenB, liquidityEther, 1, 1, (await options.signer.getAddress()), 9678825033)
   }
-
+  /**
+  * @param {RemoveLiquidityETHOptions} options
+  * @member {SignerWithAddress} signer
+  * @member {string} token
+  * @member {number | BigNumber} amountLiquidity
+  */
   public async removeLiquidityETH(options: RemoveLiquidityETHOptions) {
     const router = await this.getRouter(options.signer)
-    const liquidityEther = parseEther(options.amountLiquidity.toString())
+    let liquidityEther = options.amountLiquidity;
+    if (typeof options.amountLiquidity == "number") {
+      liquidityEther = parseEther(options.amountLiquidity.toString());
+    }
     await router.removeLiquidityETH(options.token, liquidityEther, 1, 1, (await options.signer.getAddress()), 9678825033)
   }
-
+  /**
+  * @param {SwapExactTokensForTokensOptions} options
+  * @member {SignerWithAddress} signer
+  * @member {number | BigNumber} amountIn
+  * @member {string} inputToken
+  * @member {string} outputToken
+  */
   public async swapExactTokensForTokens(options: SwapExactTokensForTokensOptions) {
     const router = await this.getRouter(options.signer)
-    options.outputToken
+    let amountInEther = options.amountIn;
+    if (typeof options.amountIn == "number") {
+      amountInEther = parseEther(options.amountIn.toString());
+    }
     const path = [options.inputToken, options.outputToken]
-    const amountInEther = parseEther(options.amountIn.toString());
     await router.swapExactTokensForTokens(amountInEther, 1, path, (await options.signer.getAddress()), 9678825033)
   }
-
+  /**
+  * @param {SwapTokensForExactTokensOptions} options
+  * @member {SignerWithAddress} signer
+  * @member {number | BigNumber} amountOut
+  * @member {string} inputToken
+  * @member {string} outputToken
+  */
   public async swapTokensForExactTokens(options: SwapTokensForExactTokensOptions) {
+    let amountOutEther = options.amountOut;
+    if (typeof options.amountOut == "number") {
+      amountOutEther = parseEther(options.amountOut.toString());
+    }
     const router = await this.getRouter(options.signer)
     const path = [options.inputToken, options.outputToken]
-    const amountOutEther = parseEther(options.amountOut.toString());
     await router.swapTokensForExactTokens(amountOutEther, constants.MaxInt256, path, (await options.signer.getAddress()), 9678825033)
   }
-
+  /**
+  * @param {QuoteOptions} options
+  * @member {SignerWithAddress} signer
+  * @member {string} tokenA
+  * @member {string} tokenB
+  * @member {number | BigNumber} amountA
+  */
   public async quote(options: QuoteOptions): Promise<BigNumber> {
     const router = await this.getRouter(options.signer)
-    const amountAEther = parseEther(options.amountA.toString())
+    let amountAEther = options.amountA;
+    if (typeof options.amountA == "number") {
+      amountAEther = parseEther(options.amountA.toString());
+    }
     const pair = await this.getPair(options.signer, options.tokenA, options.tokenB);
     let reserveA, reserveB, timestamp
     // Sort reserves with tokens
@@ -177,7 +233,14 @@ export class UniswapV2Deployer {
     const quoteAmount = await router.quote(amountAEther, reserveA, reserveB)
     return quoteAmount
   }
+  /**
+   * @param {GetLiquidityValueInTermsOfTokenAOptions} options
+   * @member {SignerWithAddress} signer
+   * @member {string} tokenA
+   * @member {string} tokenB
+   * @member {number | BigNumber} amountToken
 
+   */
   public async getLiquidityValueInTermsOfTokenA(options: GetLiquidityValueInTermsOfTokenAOptions): Promise<BigNumber> {
     const router = await this.getRouter(options.signer)
     const pair = await this.getPair(options.signer, options.tokenA, options.tokenB);
@@ -191,7 +254,10 @@ export class UniswapV2Deployer {
     }
     const tvl = reserveA * 2
     const singleLp = tvl * Number(parseEther("1")) / (await pair.totalSupply())
-    
-    return BigNumber.from((singleLp * options.amountLiquidity).toString());
+    if(typeof options.amountLiquidity == "number") {
+      return BigNumber.from((singleLp * options.amountLiquidity).toString());
+    } else {
+      return BigNumber.from((singleLp * Number(formatEther(options.amountLiquidity))).toString())
+    }
   }
 }

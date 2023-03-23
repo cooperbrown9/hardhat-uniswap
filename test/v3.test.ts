@@ -76,7 +76,7 @@ describe("Unit Tests V3", function () {
                     token0: test1.address,
                     token1: test2.address,
                     fee: 3000,
-                    amount0Desired: 1000,
+                    amount0Desired: ethers.utils.parseEther("1000"),
                     amount1Desired: 1000,
                     price: 1
                 }
@@ -90,13 +90,13 @@ describe("Unit Tests V3", function () {
                 const increaseLiquidityOptions: IncreaseLiquidityOptions = {
                     signer: signer,
                     tokenId: tokenId,
-                    amount0Desired: 10,
+                    amount0Desired: ethers.utils.parseEther("10"),
                     amount1Desired: 10,
                 }
                 const test1BalanceBeforeLp = await test1.balanceOf(await signer.getAddress());
                 await this.hre.UniswapV3Deployer.increaseLiquidity(increaseLiquidityOptions);
                 const test1BalanceAfterLp = await test1.balanceOf(await signer.getAddress());
-                expect(Number(ethers.utils.formatEther(test1BalanceBeforeLp))).to.eq(Number(ethers.utils.formatEther(test1BalanceAfterLp))+10)
+                expect(Number(ethers.utils.formatEther(test1BalanceBeforeLp))).to.eq(Number(ethers.utils.formatEther(test1BalanceAfterLp)) + 10)
             })
 
             it("decreases Liquidity", async function () {
@@ -105,7 +105,7 @@ describe("Unit Tests V3", function () {
                 const decreaseLiquidityOptions: DecreaseLiquidityOptions = {
                     signer: signer,
                     tokenId: tokenId,
-                    liquidity: 100
+                    amountLiquidity: ethers.utils.parseEther("100")
                 }
                 const test1BalanceBeforeLp = await test1.balanceOf(await signer.getAddress());
                 let amount0, amount1;
@@ -124,7 +124,7 @@ describe("Unit Tests V3", function () {
                     tokenIn: test1.address,
                     tokenOut: test2.address,
                     fee: 3000,
-                    amountIn: 10
+                    amountIn: ethers.utils.parseEther("10")
                 }
                 //@ts-ignore
                 await test1.connect(signer).approve((await this.hre.UniswapV3Deployer.getRouter(signer)).address, this.hre.ethers.constants.MaxInt256)
@@ -140,7 +140,7 @@ describe("Unit Tests V3", function () {
                     tokenIn: test1.address,
                     tokenOut: test2.address,
                     fee: 3000,
-                    amountOut: 1
+                    amountOut: ethers.utils.parseEther("1")
                 }
                 //@ts-ignore
                 await test1.connect(signer).approve((await this.hre.UniswapV3Deployer.getRouter(signer)).address, this.hre.ethers.constants.MaxInt256)
@@ -155,7 +155,7 @@ describe("Unit Tests V3", function () {
                 const exactInputOptions: ExactInputOptions = {
                     signer: signer,
                     path: [test1.address, 3000, test2.address, 3000, test3.address, 3000, test4.address],
-                    amountIn: 10
+                    amountIn: ethers.utils.parseEther("10")
                 }
                 //@ts-ignore
                 await test1.connect(signer).approve((await this.hre.UniswapV3Deployer.getRouter(signer)).address, this.hre.ethers.constants.MaxInt256)
@@ -171,7 +171,7 @@ describe("Unit Tests V3", function () {
                 const exactOutputOptions: ExactOutputOptions = {
                     signer: signer,
                     path: [test4.address, 3000, test3.address, 3000, test2.address, 3000, test1.address],
-                    amountOut: 10
+                    amountOut: ethers.utils.parseEther("10")
                 }
                 //@ts-ignore
                 await test1.connect(signer).approve((await this.hre.UniswapV3Deployer.getRouter(signer)).address, this.hre.ethers.constants.MaxInt256)
@@ -217,13 +217,13 @@ describe("Unit Tests V3", function () {
                 // await this.hre.UniswapV3Deployer.exactInputSingle(exactInputOptions2)
                 // await this.hre.UniswapV3Deployer.exactInputSingle(exactInputOptions1)
                 // await this.hre.UniswapV3Deployer.exactInputSingle(exactInputOptions2)
-  
-                
+
+
 
                 await this.hre.UniswapV3Deployer.collectFees(collectOptions);
-                
+
             })
-            
+
         })
     })
 

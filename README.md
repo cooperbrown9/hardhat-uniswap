@@ -1,32 +1,29 @@
 # hardhat-uniswap
 ## _The easiest way to integrate Uniswap into your smart contracts_
 
-Are you tired of spending hours debugging Uniswap contracts whenever you need to use them in your tests? Frustrated with that annoying V3 addLiquidity bytecode issue? Wtf is `sqrtPriceX96` ? Yeah, we get it. 
+Are you tired of spending hours debugging Uniswap contracts whenever you need to use them in your tests? Frustrated with that annoying V3 addLiquidity bytecode issue? What even is `sqrtPriceX96` ? Yeah, we get it. 
 That's why we created this package -- to enable the most efficient way to integrate the whole Uniswap suite into your project. 
 
 ## Features
 - Complete V2 and V3 deployments
-- Efficient JS Wrappers around the most used functionality
-- Automatic conversions from `Number` -> `BigNumber`
+- Efficient JS Wrappers around core functionality
+- pass in either number or BigNumbers
+- Automatic approvals - Test ERC20s created will approve all necessary contracts upon deployment
+- Eliminate hours of setup for test environments, deploy all necessary contracts for either v2 or v3 with one function!
 - TypeScript
-- Best of all, all the annoying deployment issues are already figured out
 - Default (but overridable) behind-the-scenes handling of difficult Uniswap concepts (ticks, LP fees, LP conversions, etc)
 
 
 ## Installation
+npm
 ```sh 
 $ npm install hardhat-uniswap
 ```
-or of course
+yarn
 ```ssh 
 $ yarn add hardhat-uniswap
 ```
 then import it to your `hardhat.config.ts`
-
-## Usage
-`hardhat-uniswap` extends the HardhatRunTimeEnvironment. Therefore, you can access the package through `hre.UniswapV2Deployer` or `hre.UniswapV3Deployer`, whichever version of Uniswap you are using.
-You can use it in your deploy scripts and in your tests. UniswapV2Deployer uses the `singleton` pattern to create many of its contracts, which allows the package to manage the Uniswap state for you.
-You can do functions like 
 ```js
 import { HardhatUserConfig } from "hardhat/config";
 import "hardhat-uniswap";
@@ -37,6 +34,11 @@ const config: HardhatUserConfig = {
 };
 export default config;
 ```
+
+## Usage
+`hardhat-uniswap` extends the HardhatRunTimeEnvironment. Therefore, you can access the package through `hre.UniswapV2Deployer` or `hre.UniswapV3Deployer`, whichever version of Uniswap you are using.
+You can use it in your deploy scripts and in your tests. UniswapV2Deployer uses the `singleton` pattern to create many of its contracts, which allows the package to manage the Uniswap state for you.
+
 
 # Examples
 ## deploy contract and attach Uniswap Router to it
