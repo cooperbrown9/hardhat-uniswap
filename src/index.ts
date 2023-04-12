@@ -44,11 +44,12 @@ extendConfig(
   }
 );
 
-extendEnvironment((hre) => {
-
+extendEnvironment(async (hre) => {
+  //@ts-ignore
+  const [defaultSigner] = await hre.ethers.getSigners()
   // We add a field to the Hardhat Runtime Environment here.
   // We use lazyObject to avoid initializing things until they are actually
   // needed.
-  hre.UniswapV2Deployer = lazyObject(() => new UniswapV2Deployer(hre));
-  hre.UniswapV3Deployer = lazyObject(() => new UniswapV3Deployer(hre));
+  hre.uniswapV2 = lazyObject(() => new UniswapV2Deployer(hre, defaultSigner));
+  hre.uniswapV3 = lazyObject(() => new UniswapV3Deployer(hre, defaultSigner));
 });

@@ -33,19 +33,19 @@ describe("Unit Tests", function () {
 
       it("Should deploy WETH9", async function () {
         const [signer] = await this.hre.ethers.getSigners();
-        const { weth9 } = await this.hre.UniswapV2Deployer.deploy(signer);
+        const { weth9 } = await this.hre.uniswapV2.deploy();
         assert.equal(await weth9.name(), "Wrapped Ether");
       });
 
       it("Should deploy Factory", async function () {
         const [signer] = await this.hre.ethers.getSigners();
-        const { factory } = await this.hre.UniswapV2Deployer.deploy(signer);
+        const { factory } = await this.hre.uniswapV2.deploy();
         assert.equal(await factory.feeToSetter(), signer.address);
       });
 
       it("Should deploy Router", async function () {
         const [signer] = await this.hre.ethers.getSigners();
-        const { router, factory, weth9 } = await this.hre.UniswapV2Deployer.deploy(signer);
+        const { router, factory, weth9 } = await this.hre.uniswapV2.deploy();
         assert.equal(await router.factory(), factory.address);
         assert.equal(await router.WETH(), weth9.address);
       });
@@ -54,8 +54,8 @@ describe("Unit Tests", function () {
       it("should create an ERC20", async function () {
         const [signer] = await this.hre.ethers.getSigners();
 
-        await this.hre.UniswapV2Deployer.deploy(signer)
-        const test1 = await this.hre.UniswapV2Deployer.createERC20(signer, "Test1", "TEST1")
+        await this.hre.uniswapV2.deploy()
+        const test1 = await this.hre.uniswapV2.createERC20("Test1", "TEST1")
         expect(await test1.name()).to.eq("Test1")
       });
 
@@ -83,7 +83,7 @@ describe("Unit Tests", function () {
           tokenB: test2.address,
           amountA: ethers.utils.parseEther("20")
         }
-        expect(ethers.utils.formatEther(await this.hre.UniswapV2Deployer.quote(quoteOptions))).to.eq("20.0");
+        expect(ethers.utils.formatEther(await this.hre.uniswapV2.quote(quoteOptions))).to.eq("20.0");
       })
 
       it("should get value of LP in terms of token A", async function () {
@@ -95,7 +95,7 @@ describe("Unit Tests", function () {
           tokenB: test2.address,
           amountLiquidity: ethers.utils.parseEther("5")
         }
-        expect(ethers.utils.formatEther((await this.hre.UniswapV2Deployer.getLiquidityValueInTermsOfTokenA(getLiquidityValueInTermsOfTokenAOptions)).toString())).to.eq("10.0")
+        expect(ethers.utils.formatEther((await this.hre.uniswapV2.getLiquidityValueInTermsOfTokenA(getLiquidityValueInTermsOfTokenAOptions)).toString())).to.eq("10.0")
       })
     })
 
@@ -106,7 +106,7 @@ describe("Unit Tests", function () {
         expect(Number(ethers.utils.formatEther(await pair.balanceOf(await signer.getAddress())))).to.be.greaterThan(0)
       })
 
-      it("should swapExactTokensForTokens", async function () {
+      it("should swap", async function () {
         const { test1, test2, pair } = await addLiquidity(this.hre);
         const [signer] = await this.hre.ethers.getSigners();
         const test1BalanceBeforeSwap = await test1.balanceOf(await signer.getAddress())
@@ -117,13 +117,12 @@ describe("Unit Tests", function () {
           amountIn: ethers.utils.parseEther("10")
         }
         const quoteOptions: QuoteOptions = {
-          signer: signer,
           tokenA: test1.address,
           tokenB: test2.address,
           amountA: 10
         }
-        const quote = await this.hre.UniswapV2Deployer.quote(quoteOptions);
-        await this.hre.UniswapV2Deployer.swapExactTokensForTokens(swapOptions);
+        const quote = await this.hre.uniswapV2.quote(quoteOptions);
+        await this.hre.uniswapV2.swap(swapOptions);
         const test1BalanceAfterSwap = await test1.balanceOf(await signer.getAddress())
         expect(Number(ethers.utils.formatEther(test1BalanceBeforeSwap)) - Number(ethers.utils.formatEther(test1BalanceAfterSwap))).to.eq(Number(ethers.utils.formatEther(quote)))
 
@@ -139,7 +138,7 @@ describe("Unit Tests", function () {
           inputToken: test1.address,
           outputToken: test2.address,
         }
-        await this.hre.UniswapV2Deployer.swapTokensForExactTokens(swapOptions);
+        await this.hre.uniswapV2.swapTokensForExactTokens(swapOptions);
         const test2BalanceAfterSwap = await test2.balanceOf(await signer.getAddress())
         expect(Number(ethers.utils.formatEther(test2BalanceBeforeSwap))).to.eq(Number(ethers.utils.formatEther(test2BalanceAfterSwap)) - 10)
       })
@@ -148,14 +147,14 @@ describe("Unit Tests", function () {
         const [signer] = await this.hre.ethers.getSigners();
         const { test1, test2, pair } = await addLiquidity(this.hre);
         const pairBalance = await pair.balanceOf(await signer.getAddress())
-        await pair.connect(signer).approve((await this.hre.UniswapV2Deployer.getRouter(signer)).address, ethers.constants.MaxUint256)
+        await pair.connect(signer).approve((await this.hre.uniswapV2.getRouter()).address, ethers.constants.MaxUint256)
         const removeLiquidityOptions: RemoveLiquidityOptions = {
           signer: signer,
           tokenA: test1.address,
           tokenB: test2.address,
           amountLiquidity: pairBalance
         }
-        await this.hre.UniswapV2Deployer.removeLiquidity(removeLiquidityOptions)
+        await this.hre.uniswapV2.removeLiquidity(removeLiquidityOptions)
         expect((await pair.balanceOf(await signer.getAddress())).toString()).to.eq('0')
       })
 
@@ -164,15 +163,15 @@ describe("Unit Tests", function () {
         const signer = signers[0]
 
         const balance = await this.hre.ethers.provider.getBalance(await signer.getAddress());
-        const test1 = await this.hre.UniswapV2Deployer.createERC20(signer, "Test1", "TEST1")
-        // await test1.connect(signer).approve((await this.hre.UniswapV2Deployer.getRouter(signer)).address, ethers.constants.MaxUint256)
+        const test1 = await this.hre.uniswapV2.createERC20("Test1", "TEST1")
+        // await test1.connect(signer).approve((await this.hre.uniswapV2.getRouter(signer)).address, ethers.constants.MaxUint256)
         const addLiquidityETHOptions: AddLiquidityETHOptions = {
           signer: signer,
           token: test1.address,
           amountToken: 1000,
           amountETH: 5
         }
-        await this.hre.UniswapV2Deployer.addLiquidityETH(addLiquidityETHOptions)
+        await this.hre.uniswapV2.addLiquidityETH(addLiquidityETHOptions)
         const balanceAfterAddEth = await this.hre.ethers.provider.getBalance(await signer.getAddress());
         // account for some ETH burned as gas.
         expect(Number(ethers.utils.formatEther(balanceAfterAddEth.toString()))).to.be.lessThanOrEqual(Number(ethers.utils.formatEther(balance.toString())) - 5)
@@ -185,7 +184,7 @@ describe("Unit Tests", function () {
         beforeEach("deploy", async function () {
           const signers = await this.hre.ethers.getSigners();
           signer = signers[0];
-          [weth9, factory, router] = await this.hre.UniswapV2Deployer.deploy()
+          [weth9, factory, router] = await this.hre.uniswapV2.deploy()
         }
         )
 
@@ -197,23 +196,22 @@ describe("Unit Tests", function () {
 async function addLiquidity(hre: HardhatRuntimeEnvironment) {
   const [signer] = await hre.ethers.getSigners();
 
-  const test1 = await hre.UniswapV2Deployer.createERC20(signer, "Test1", "TEST1")
-  const test2 = await hre.UniswapV2Deployer.createERC20(signer, "Test2", "TEST2")
+  const test1 = await hre.uniswapV2.createERC20("Test1", "TEST1")
+  const test2 = await hre.uniswapV2.createERC20("Test2", "TEST2")
 
-  // await test1.connect(signer).approve((await hre.UniswapV2Deployer.getRouter(signer)).address, ethers.constants.MaxUint256)
-  // await test2.connect(signer).approve((await hre.UniswapV2Deployer.getRouter(signer)).address, ethers.constants.MaxUint256)
+  // await test1.connect(signer).approve((await hre.uniswapV2.getRouter(signer)).address, ethers.constants.MaxUint256)
+  // await test2.connect(signer).approve((await hre.uniswapV2.getRouter(signer)).address, ethers.constants.MaxUint256)
 
   const addLiquidityOptions: AddLiquidityOptions = {
-    signer: signer,
     tokenA: test1.address,
     tokenB: test2.address,
     amountTokenA: 1000,
     amountTokenB: hre.ethers.utils.parseEther("1000"),
   }
 
-  await hre.UniswapV2Deployer.addLiquidity(addLiquidityOptions)
+  await hre.uniswapV2.addLiquidity(addLiquidityOptions)
 
-  const pair = await hre.UniswapV2Deployer.getPair(signer, test1.address, test2.address);
+  const pair = await hre.uniswapV2.getPair(test1.address, test2.address);
 
 
   return { test1, test2, pair }

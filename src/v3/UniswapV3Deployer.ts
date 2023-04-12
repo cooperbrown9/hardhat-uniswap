@@ -23,9 +23,10 @@ export class UniswapV3Deployer {
   MAX_UINT128 = BigNumber.from("340282366920938463463374607431768211455")
 
   public Interface = Interface;
-  public deployer?: SignerWithAddress;
+  // public deployer?: SignerWithAddress;
   public hre?: HardhatRuntimeEnvironment;
 
+  private _signer: SignerWithAddress;
   private _factory?: Contract;
   private _router?: Contract;
   private _weth?: Contract;
@@ -35,13 +36,13 @@ export class UniswapV3Deployer {
   private _nftDescriptorLibrary?: Contract;
   private _tokens: Map<string, Contract>;
 
-  constructor(hre: HardhatRuntimeEnvironment, _deployer?: SignerWithAddress) {
+  constructor(hre: HardhatRuntimeEnvironment, _signer: SignerWithAddress) {
     this.hre = hre;
-    this.deployer = _deployer;
+    this._signer = _signer;
     this._tokens = new Map()
   }
 
-  public async deploy(signer: SignerWithAddress) {
+  public async deploy(signer: SignerWithAddress = this._signer) {
     const { factory, Factory } = await deployFactory(signer);
     const { weth9, WETH9 } = await deployWETH9(signer);
     const { router, Router } = await deployRouter(signer, factory, weth9);
@@ -71,7 +72,7 @@ export class UniswapV3Deployer {
 
   }
 
-  public async getWeth(signer: SignerWithAddress): Promise<Contract> {
+  public async getWeth(signer: SignerWithAddress = this._signer): Promise<Contract> {
     if (!this._weth) {
       const { weth9 } = await deployWETH9(signer)
       this._weth = weth9;
@@ -79,7 +80,7 @@ export class UniswapV3Deployer {
     return this._weth;
   }
 
-  public async getFactory(signer: SignerWithAddress): Promise<Contract> {
+  public async getFactory(signer: SignerWithAddress = this._signer): Promise<Contract> {
     if (!this._factory) {
       const { factory } = await deployFactory(signer)
       this._factory = factory;
@@ -87,7 +88,7 @@ export class UniswapV3Deployer {
     return this._factory;
   }
 
-  public async getRouter(signer: SignerWithAddress): Promise<Contract> {
+  public async getRouter(signer: SignerWithAddress = this._signer): Promise<Contract> {
     if (!this._router) {
       const { router } = await deployRouter(signer, await this.getFactory(signer), await this.getWeth(signer))
       this._router = router;
@@ -95,21 +96,21 @@ export class UniswapV3Deployer {
     return this._router;
   }
 
-  public async getTokenDescriptor(signer: SignerWithAddress): Promise<Contract> {
+  public async getTokenDescriptor(signer: SignerWithAddress = this._signer): Promise<Contract> {
     if (!this._tokenDescriptor) {
       const { tokenDescriptor } = await deployTokenDescriptor(signer, await this.getNftDescriptorLibrary(signer), await this.getWeth(signer))
       this._tokenDescriptor = tokenDescriptor;
     }
     return this._tokenDescriptor;
   }
-  public async getPositionManager(signer: SignerWithAddress): Promise<Contract> {
+  public async getPositionManager(signer: SignerWithAddress = this._signer): Promise<Contract> {
     if (!this._positionManager) {
       const { positionManager } = await deployPositionManager(signer, await this.getFactory(signer), await this.getWeth(signer), await this.getTokenDescriptor(signer))
       this._positionManager = positionManager;
     }
     return this._positionManager;
   }
-  public async getNftDescriptorLibrary(signer: SignerWithAddress): Promise<Contract> {
+  public async getNftDescriptorLibrary(signer: SignerWithAddress = this._signer): Promise<Contract> {
     if (!this._nftDescriptorLibrary) {
       const { nftDescriptorLibrary } = await deployNFTDescriptorLibrary(signer)
       this._nftDescriptorLibrary = nftDescriptorLibrary;
@@ -117,7 +118,7 @@ export class UniswapV3Deployer {
     return this._nftDescriptorLibrary;
   }
 
-  public async createERC20(signer: SignerWithAddress, name: string, symbol: string): Promise<Contract> {
+  public async createERC20(name: string, symbol: string, signer: SignerWithAddress = this._signer): Promise<Contract> {
     const { erc20 } = await CommonDeployers.deployERC20(signer, name, symbol, await this.getRouter(signer));
     this._tokens.set(erc20.address, erc20);
     return erc20;
@@ -135,6 +136,7 @@ export class UniswapV3Deployer {
   * @member {number | BigNumber} amountIn
   */
   public async exactInputSingle(options: ExactInputSingleOptions) {
+    options.signer ??= this._signer;
     const router = await this.getRouter(options.signer)
     let amountInEther = options.amountIn;
     if (typeof options.amountIn == "number") {
@@ -159,6 +161,8 @@ export class UniswapV3Deployer {
   * @member {number | BigNumber} amountin
   */
   public async exactInput(options: ExactInputOptions) {
+    options.signer ??= this._signer;
+
     const router = await this.getRouter(options.signer)
     let amountInEther = options.amountIn;
     if (typeof options.amountIn == "number") {
@@ -191,6 +195,7 @@ export class UniswapV3Deployer {
   * @member {number | BigNumber} amountOut
   */
   public async exactOutputSingle(options: ExactOutputSingleOptions) {
+    options.signer ??= this._signer;
     const router = await this.getRouter(options.signer)
     let amountOutEther = options.amountOut;
     if (typeof options.amountOut == "number") {
@@ -217,6 +222,7 @@ export class UniswapV3Deployer {
   * @member {number | BigNumber} amountOut
   */
   public async exactOutput(options: ExactOutputOptions) {
+    options.signer ??= this._signer;
     const router = await this.getRouter(options.signer)
     let amountOutEther = options.amountOut;
     if (typeof options.amountOut == "number") {
@@ -251,7 +257,8 @@ export class UniswapV3Deployer {
   * @member {number | BigNumber} amount1Desired
   * @member {number} price
   */
-  public async mintPosition(options: MintOptions): Promise<Number> {
+  public async mintPosition(options: MintOptions): Promise<number> {
+    options.signer ??= this._signer;
     const positionManager = await this.getPositionManager(options.signer)
     const signerAddress = await options.signer.getAddress()
 
@@ -322,6 +329,7 @@ export class UniswapV3Deployer {
   * @member {number} tokenId 
   */
   public async collectFees(options: CollectOptions): Promise<Number> {
+    options.signer ??= this._signer;
     const positionManager = await this.getPositionManager(options.signer)
     const collectParams = {
       tokenId: options.tokenId,
@@ -344,6 +352,7 @@ export class UniswapV3Deployer {
   * @member {number | BigNumber} amount1Desired
   */
   public async increaseLiquidity(options: IncreaseLiquidityOptions) {
+    options.signer ??= this._signer;
     const positionManager = await this.getPositionManager(options.signer)
     let amount0DesiredEther = options.amount0Desired;
     let amount1DesiredEther = options.amount1Desired;
@@ -373,6 +382,7 @@ export class UniswapV3Deployer {
   * @member {number | BigNumber} liquidityAmount
   */
   public async decreaseLiquidity(options: DecreaseLiquidityOptions): Promise<Array<number>> {
+    options.signer ??= this._signer;
     const positionManager = await this.getPositionManager(options.signer)
     let liquidityEther = options.amountLiquidity;
     if (typeof options.amountLiquidity == "number") {

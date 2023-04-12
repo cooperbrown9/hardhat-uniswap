@@ -2,7 +2,7 @@ import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { BigNumber, Bytes, Signer } from "ethers";
 
 export interface AddLiquidityOptions {
-    signer: SignerWithAddress;
+    signer?: SignerWithAddress;
     tokenA: string;
     tokenB: string;
     amountTokenA: number | BigNumber;
@@ -10,45 +10,45 @@ export interface AddLiquidityOptions {
 }
 
 export interface RemoveLiquidityOptions {
-    signer: SignerWithAddress;
+    signer?: SignerWithAddress;
     tokenA: string;
     tokenB: string;
     amountLiquidity: number | BigNumber;
 }
 export interface RemoveLiquidityETHOptions {
-    signer: SignerWithAddress;
+    signer?: SignerWithAddress;
     token: string;
     amountLiquidity: number | BigNumber;
 }
 export interface SwapExactTokensForTokensOptions {
-    signer: SignerWithAddress;
+    signer?: SignerWithAddress;
     amountIn: number | BigNumber;
     inputToken: string;
     outputToken: string;
 }
 
 export interface SwapTokensForExactTokensOptions {
-    signer: SignerWithAddress;
+    signer?: SignerWithAddress;
     amountOut: number | BigNumber;
     inputToken: string;
     outputToken: string;
 }
 
 export interface QuoteOptions {
-    signer: SignerWithAddress;
+    signer?: SignerWithAddress;
     tokenA: string;
     tokenB: string;
     amountA: number | BigNumber;
 }
 
 export interface GetLiquidityValueInTermsOfTokenAOptions {
-    signer: SignerWithAddress;
+    signer?: SignerWithAddress;
     tokenA: string;
     tokenB: string;
     amountLiquidity: number | BigNumber;
 }
 export interface AddLiquidityETHOptions {
-    signer: SignerWithAddress;
+    signer?: SignerWithAddress;
     token: string;
     amountToken: number | BigNumber;
     amountETH: number | BigNumber;
@@ -57,7 +57,7 @@ export interface AddLiquidityETHOptions {
 
 //V3 Types
 export interface ExactInputSingleOptions {
-    signer: SignerWithAddress;
+    signer?: SignerWithAddress;
     tokenIn: string;
     tokenOut: string;
     fee: number;
@@ -65,13 +65,13 @@ export interface ExactInputSingleOptions {
 }
 
 export interface ExactInputOptions {
-    signer: SignerWithAddress;
+    signer?: SignerWithAddress;
     path: Array<string | number>;
     amountIn: number | BigNumber;
 }
 
 export interface ExactOutputSingleOptions {
-    signer: SignerWithAddress,
+    signer?: SignerWithAddress,
     tokenIn: string;
     tokenOut: string;
     fee: number;
@@ -79,14 +79,14 @@ export interface ExactOutputSingleOptions {
 }
 
 export interface ExactOutputOptions {
-    signer: SignerWithAddress;
+    signer?: SignerWithAddress;
     path: Array<string | number>;
     amountOut: number | BigNumber;
 }
 
 
 export interface MintOptions {
-    signer: SignerWithAddress;
+    signer?: SignerWithAddress;
     token0: string;
     token1: string;
     fee: number;
@@ -96,19 +96,19 @@ export interface MintOptions {
 }
 
 export interface CollectOptions {
-    signer: SignerWithAddress;
+    signer?: SignerWithAddress;
     tokenId: number;
 }
 
 export interface IncreaseLiquidityOptions {
-    signer: SignerWithAddress;
+    signer?: SignerWithAddress;
     tokenId: number;
     amount0Desired: number | BigNumber;
     amount1Desired: number | BigNumber;
 }
 
 export interface DecreaseLiquidityOptions {
-    signer: SignerWithAddress;
+    signer?: SignerWithAddress;
     tokenId: number;
     amountLiquidity: number | BigNumber;
 }
